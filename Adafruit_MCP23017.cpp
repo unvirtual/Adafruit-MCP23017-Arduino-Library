@@ -170,9 +170,10 @@ uint16_t Adafruit_MCP23017::readGPIOAB() {
   _wire->requestFrom(MCP23017_ADDRESS | i2caddr, 2);
   a = wirerecv(_wire);
   ba = wirerecv(_wire);
-  ba <<= 8;
+  ba <<= 8u;
   ba |= a;
 
+  // Serial.println("GPIOAB READ");
   return ba;
 }
 
@@ -348,4 +349,26 @@ uint8_t Adafruit_MCP23017::getLastInterruptPinValue() {
   }
 
   return MCP23017_INT_ERR;
+}
+
+uint16_t Adafruit_MCP23017::readInterruptGPIOAB() {
+  uint16_t res = 0;
+	uint8_t cap_a;
+
+	_wire->beginTransmission(MCP23017_ADDRESS | i2caddr);
+	wiresend(MCP23017_INTCAPA, _wire);
+	_wire->endTransmission();
+	_wire->requestFrom(MCP23017_ADDRESS | i2caddr, 1);
+	cap_a = wirerecv(_wire);
+
+	_wire->beginTransmission(MCP23017_ADDRESS | i2caddr);
+	wiresend(MCP23017_INTCAPB, _wire);
+	_wire->endTransmission();
+	_wire->requestFrom(MCP23017_ADDRESS | i2caddr, 1);
+
+	res = wirerecv(_wire);
+	res <<= 8u;
+	res |= cap_a;
+
+	return res;
 }

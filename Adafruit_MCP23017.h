@@ -41,6 +41,8 @@ public:
   uint8_t getLastInterruptPin();
   uint8_t getLastInterruptPinValue();
 
+  uint16_t readInterruptGPIOAB();
+
 private:
   uint8_t i2caddr;
   TwoWire *_wire; //!< pointer to a TwoWire object
